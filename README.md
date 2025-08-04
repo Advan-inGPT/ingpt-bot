@@ -1,5 +1,5 @@
-## install requirements
-## '$ pip install -r requirements.py'
+## Install requirements
+### '$ pip install -r requirements.py'
 
 ## To run
 
