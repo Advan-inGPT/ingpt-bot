@@ -4,11 +4,20 @@ import subprocess
 import os
 import requests
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # for prototype; tighten later
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # === Model download config ===
-#MODEL_PATH = "../../models/deepseek-coder-1.3b.gguf"
-MODEL_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "models"))
+#MODEL_PATH = "../models/deepseek-coder-1.3b.gguf"
+MODEL_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "models"))
 MODEL_FILE = "deepseek-coder-1.3b.gguf"
 MODEL_URL = "https://huggingface.co/TheBloke/deepseek-coder-1.3B-instruct-GGUF/resolve/main/deepseek-coder-1.3b-instruct.Q4_K_M.gguf"
 MODEL_PATH = os.path.join(MODEL_DIR, MODEL_FILE)
