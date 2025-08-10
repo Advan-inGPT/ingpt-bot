@@ -1,2 +1,4 @@
 # Ignore models files
 models/
+models/
+*.gguf
