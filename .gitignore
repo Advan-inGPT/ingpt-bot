@@ -1,4 +1,6 @@
 # Ignore models files
 models/
-models/
 *.gguf
+
+# Ignore python environment
+.env/
