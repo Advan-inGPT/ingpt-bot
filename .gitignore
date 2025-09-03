@@ -8,7 +8,7 @@ venv/
 
 
 # Flutter
-build/
+frontend/build/
 .dart_tool/
 .flutter-plugins
 .packages
@@ -19,3 +19,15 @@ build/
 # IDEs
 .vscode/
 .idea/
+
+
+**/build/
+**/.gradle/
+*.apk
+*.aab
+*.ipa
+# Xcode/IDE bits (optional)
+*.iml
+.idea/
+.vscode/
+.DS_Store
