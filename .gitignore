@@ -1,32 +1,10 @@
-# Ignore models files
-models/
-*.gguf
-
-# Ignore python environment
-.env/
-venv/
-
-
-# Flutter
-frontend/build/
-.dart_tool/
-.flutter-plugins
-.packages
-
-# macOS
-.DS_Store
-
-# IDEs
-.vscode/
-.idea/
-
-
+# Flutter / Android build artifacts
 **/build/
 **/.gradle/
-**/.apk
+*.apk
 *.aab
 *.ipa
-# Xcode/IDE bits (optional)
+# IDE / OS
 *.iml
 .idea/
 .vscode/
