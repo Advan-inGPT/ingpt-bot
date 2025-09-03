@@ -23,7 +23,7 @@ frontend/build/
 
 **/build/
 **/.gradle/
-*.apk
+**/.apk
 *.aab
 *.ipa
 # Xcode/IDE bits (optional)
