@@ -1,16 +1,30 @@
-FROM python:3.12
+# .devcontainer/Dockerfile
 
-# Install dependencies
+FROM python:3.12-slim
+
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    build-essential \
     curl \
     git \
+    unzip \
     libstdc++6 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python deps
-COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
+# Install Ollama (CPU-only)
+RUN curl -fsSL https://ollama.com/install.sh | sh
 
-# Optional: llama.cpp build can go here if you automate it
+# Set working directory
+WORKDIR /workspace
+
+# Copy backend requirements file for dependency install
+COPY backend/requirements.txt /tmp/requirements.txt
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+
+# Expose FastAPI port
+EXPOSE 8000
+
+# Default command when container starts
+CMD ["bash", "-c", "uvicorn backend.app:app --host 0.0.0.0 --port 8000 --reload"]
 

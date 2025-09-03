@@ -1,1 +1,0 @@
-/usr/bin/c++  -O3 -DNDEBUG   CMakeFiles/llama-gguf.dir/gguf.cpp.o  -o ../../bin/llama-gguf  -Wl,-rpath,/home/saif/Desktop/projects/codegen-r1/llama.cpp/build/bin: ../../bin/libggml.so -pthread ../../bin/libggml-cpu.so ../../bin/libggml-base.so 

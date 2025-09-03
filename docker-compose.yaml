@@ -1,0 +1,14 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ollama-data:/root/.ollama
+      - ./backend:/workspace/backend
+    restart: unless-stopped
+
+volumes:
+  ollama-data:

@@ -1,64 +1,140 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
 import subprocess
-import os
+import threading
+import time
 import requests
-
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+import os
 
+current_model = os.environ.get("DEFAULT_MODEL", "tinyllama")
+
+# === FastAPI Setup ===
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # for prototype; tighten later
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# === Model download config ===
-#MODEL_PATH = "../models/deepseek-coder-1.3b.gguf"
-MODEL_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "models"))
-MODEL_FILE = "deepseek-coder-1.3b.gguf"
-MODEL_URL = "https://huggingface.co/TheBloke/deepseek-coder-1.3B-instruct-GGUF/resolve/main/deepseek-coder-1.3b-instruct.Q4_K_M.gguf"
-MODEL_PATH = os.path.join(MODEL_DIR, MODEL_FILE)
-#LLAMA_BIN_DIR = "../build/bin"
-LLAMA_BIN_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "build", "bin"))
+# === Globals ===
+current_model = "tinyllama"  # default
+ollama_process = None
+ollama_url = "http://localhost:11434"
+model_check_timeout = 60  # seconds
+ollama_lock = threading.Lock()
 
 
+# === Start Ollama in background ===
+def start_ollama():
+    global ollama_process
+    try:
+        # Start `ollama serve` in the background
+        ollama_process = subprocess.Popen(
+            ["ollama", "serve"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        print("🚀 Ollama server started")
+    except Exception as e:
+        print(f"❌ Failed to start Ollama: {e}")
 
-# === Run on FastAPI startup ===
+
+# === Wait for Ollama server to be ready ===
+def wait_for_ollama_ready(timeout=60):
+    print("⏳ Waiting for Ollama to be ready...")
+    for _ in range(timeout):
+        try:
+            r = requests.get(f"{ollama_url}/api/tags")
+            if r.status_code == 200:
+                print("✅ Ollama is ready")
+                return
+        except:
+            pass
+        time.sleep(1)
+    raise RuntimeError("Ollama did not start in time")
+
+
+# === Download and preload a model ===
+known_models = set()
+def ensure_model(model_name):
+    if model_name in known_models:
+        return
+    print(f"📦 Pulling model: {model_name}")
+    try:
+        r = requests.post(f"{ollama_url}/api/pull", json={"name": model_name}, timeout=180)
+        r.raise_for_status()
+        known_models.add(model_name)
+        print(f"✅ Model '{model_name}' is ready.")
+    except Exception as e:
+        print(f"❌ Failed to pull model '{model_name}': {e}")
+        raise
+
 @app.on_event("startup")
-def download_model_if_needed():
-    os.makedirs(MODEL_DIR, exist_ok=True)
-    if os.path.exists(MODEL_PATH):
-        print(f"✅ Model already exists at {MODEL_PATH}")
-    else:
-        print(f"⬇️ Downloading model to {MODEL_PATH} ...")
-        with requests.get(MODEL_URL, stream=True) as r:
-            r.raise_for_status()
-            with open(MODEL_PATH, "wb") as f:
-                for chunk in r.iter_content(chunk_size=8192):
-                    f.write(chunk)
-        print(f"✅ Download complete!")
+def startup():
+    start_ollama()
+    wait_for_ollama_ready()
+    for model in get_models()["models"]:
+        ensure_model(model)
 
 
-
-
+# === Request Models ===
 class Prompt(BaseModel):
     prompt: str
 
+class ModelSwitch(BaseModel):
+    model: str
+
+
 @app.post("/chat")
 def chat(prompt: Prompt):
-    full_prompt = f"### Instruction:\n{prompt.prompt}\n### Response:\n"
-    try:
-        result = subprocess.run(
-            ["./llama-cli", "-m", MODEL_PATH, "-p", full_prompt],
-            cwd=LLAMA_BIN_DIR,
-            capture_output=True,
-            text=True,
-            timeout=60
-        )
-        output = result.stdout.split("### Response:")[-1].strip()
-        return {"response": output}
-    except Exception as e:
-        return {"error": str(e)}
+    with ollama_lock:
+        try:
+            res = requests.post(
+                f"{ollama_url}/api/generate",
+                json={"model": current_model, "prompt": prompt.prompt, "stream": False},
+                timeout=60,
+            )
+            res.raise_for_status()
+            response_data = res.json()
+            return {"response": response_data.get("response", "No response")}
+        except Exception as e:
+            return {"error": str(e)}
+
+
+@app.post("/switch_model")
+def switch_model(req: ModelSwitch):
+    global current_model
+    with ollama_lock:
+        current_model = req.model
+        try:
+            ensure_model(current_model)
+            return {"message": f"✅ Switched to model: {current_model}"}
+        except Exception as e:
+            return {"error": str(e)}
+
+
+@app.get("/current_model")
+def get_current_model():
+    return {"model": current_model}
+
+@app.get("/models")
+def get_models():
+    return {"models": ["llama2", "gemma", "tinyllama"]}
+
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
+@app.on_event("shutdown")
+def shutdown_event():
+    global ollama_process
+    if ollama_process:
+        print("🛑 Stopping Ollama...")
+        ollama_process.terminate()
+        ollama_process.wait()

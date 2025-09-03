@@ -4,3 +4,18 @@ models/
 
 # Ignore python environment
 .env/
+venv/
+
+
+# Flutter
+build/
+.dart_tool/
+.flutter-plugins
+.packages
+
+# macOS
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
