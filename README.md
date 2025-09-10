@@ -16,10 +16,22 @@ _$ cd backend_ <br>
 _$ uvicorn app:app --host 0.0.0.0 --port 8000_
 
 
-## Flutter - Frontend
+## Flutter - Frontend (web)
 Open another terminal to start the bot <br>
 cd to frontend<br>
 _$ flutter run -d chrome --release --dart-define=API_BASE=http://localhost:8000_ <br>
+
+
+## Flutter - Frontend (android)
+Open another terminal to start the bot <br>
+cd to frontend<br>
+
+then launch the emulator 
+## _$flutter emulators --launch <emulator_id>_
+
+run on the emulator
+## _$ flutter run -d emulator-5554 --release --dart-define=API_BASE=http://10.0.2.2:8000_ <br>_
+
 
 ## Streamlit - Frontend <no longer supported>
 open another terminal and run the fronend <br>
