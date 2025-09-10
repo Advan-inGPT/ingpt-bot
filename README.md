@@ -1,4 +1,4 @@
-# Docker container <stable version> :
+# Docker container - Backend <stable version> :
 from project root run
 
 ### _$ docker compose run --build_
@@ -6,7 +6,7 @@ from project root run
 it will creat a docker container with all the necessary python pacakages and will start the **FastApi** Server
 
 
-# Install required python packages and start the server <manually. skip if youn are using docker>
+# Install required python packages and start the server manually. skip this step youn are using docker.
 
 from <project_root>/backend run to install the python dependen:
 ### _$ pip install -r requirements.py_
