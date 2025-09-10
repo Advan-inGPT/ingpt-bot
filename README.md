@@ -1,7 +1,7 @@
 # Docker container <stable version> :
 from project root run
 
-_$ docker compose run --build_
+### _$ docker compose run --build_
 
 it will creat a docker container with all the necessary python pacakages and will start the **FastApi** Server
 
