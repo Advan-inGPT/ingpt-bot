@@ -1,5 +1,6 @@
 # Install requirements
 
+### from <project_root>/backend run:
 ### _$ pip install -r requirements.py_
 
 # To run
