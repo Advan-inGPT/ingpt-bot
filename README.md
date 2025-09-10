@@ -27,10 +27,10 @@ Open another terminal to start the bot <br>
 cd to frontend<br>
 
 then launch the emulator 
-## _$flutter emulators --launch <emulator_id>_
+### _$ flutter emulators --launch <emulator_id>_
 
 run on the emulator
-## _$ flutter run -d emulator-5554 --release --dart-define=API_BASE=http://10.0.2.2:8000_ <br>_
+### _$ flutter run -d emulator-5554 --release --dart-define=API_BASE=http://10.0.2.2:8000_
 
 
 ## Streamlit - Frontend <no longer supported>
