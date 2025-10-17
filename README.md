@@ -1,7 +1,7 @@
 # Docker container - Backend <stable version> :
 from project root run
 
-### _$ docker compose run --build_
+### _$ docker compose run --build backend_
 
 it will create a docker container with all the necessary python pacakages and will start the **FastApi** Server
 
