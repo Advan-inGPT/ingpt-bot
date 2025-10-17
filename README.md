@@ -9,7 +9,7 @@ it will create a docker container with all the necessary python pacakages and wi
 # Install required python packages and start the server manually. skip this step youn are using docker.
 
 from <project_root>/backend run to install the python dependen:
-### _$ pip install -r requirements.py_
+### _$ pip install -r requirements.txt_
 
 ## Start FastAPI Server
 _$ cd backend_ <br>
