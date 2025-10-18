@@ -6,7 +6,7 @@ from project root run
 it will create a docker container with all the necessary python pacakages and will start the **FastApi** Server
 
 
-# Install required python packages and start the server manually. skip this step youn are using docker.
+# Install required python packages and start the server manually. skip this step for backend if you are using docker.
 
 from <project_root>/backend run to install the python dependen:
 ### _$ pip install -r requirements.txt_
