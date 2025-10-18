@@ -1,5 +1,5 @@
 # Flutter / Android build artifacts
-**/build/
+
 **/.gradle/
 *.apk
 *.aab
