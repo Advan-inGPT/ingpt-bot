@@ -22,8 +22,7 @@ app.add_middleware(
 # === Globals ===
 current_model = "tinyllama"  # default
 ollama_process = None
-# ollama_url = "http://localhost:11434"
-ollama_url = "http://host.docker.internal:11434"
+ollama_url = "http://localhost:11434"
 model_check_timeout = 60  # seconds
 ollama_lock = threading.Lock()
 
