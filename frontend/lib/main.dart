@@ -43,7 +43,7 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     _api = ApiClient(
-      baseUrl: const String.fromEnvironment('API_BASE', defaultValue: 'http://10.0.2.2:8000'),
+      baseUrl: const String.fromEnvironment('API_BASE', defaultValue: 'https://ingpt.eastus2.cloudapp.azure.com',),
     );
     _loadCurrentModel();
   }
