@@ -3,7 +3,7 @@ from project root run
 
 ### _$ docker compose up --build_
 
-it will create a docker container with all the necessary python pacakages and will start the **FastApi** Server
+This will create a docker container with all the necessary python pacakages and will start the **FastApi** Server
 
 
 # Install required python packages and start the server manually. skip this step for backend if you are using docker.
